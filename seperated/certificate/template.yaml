@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for ACM Certificate
+  
+Parameters:
+  DomainName:
+    Description: Domain name
+    Type: String
+    Default: example.com
+  SubDomainName:
+    Description: SubDomain name
+    Type: String
+    Default: api
+  HostedZoneId:
+    Description: Hosted Zone ID
+    Type: String
+    Default: HOSTED_ZONE_ID_FOR_DOMAIN
+
+Resources:
+  CertificateManagerCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub "${SubDomainName}.${DomainName}"
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Sub "${SubDomainName}.${DomainName}"
+          HostedZoneId: !Ref HostedZoneId
+
+Outputs:
+  Certificate:
+    Description: "CertificateArn"
+    Value: !Ref CertificateManagerCertificate
